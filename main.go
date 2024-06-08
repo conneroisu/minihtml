@@ -25,6 +25,9 @@ func main() {
 
 // run takes a URL as input and outputs a cleaned up HTML file.
 func run(ctx context.Context, args []string) error {
+	if len(args) < 2 {
+		return fmt.Errorf("missing url")
+	}
 	// take the url from the command line
 	url := args[1]
 	fmt.Println("url:", url)
@@ -65,14 +68,19 @@ func clean(body []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	// remove script tags
 	doc.Find("script").Remove()
+	// remove style tags
 	doc.Find("style").Remove()
+	// remove head tags
 	doc.Find("head").Remove()
+	// remove meta tags
 	doc.Find("meta").Remove()
+	// remove link tags
 	doc.Find("link").Remove()
+	// remove image tags
 	doc.Find("img").Remove()
-	doc.Find("form").Remove()
-	doc.Find("input").Remove()
-	doc.Find("button").Remove()
+	// remove comments
+	// doc.Find("!--").Remove()
 	return doc.Html()
 }
